@@ -9,8 +9,8 @@ import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import {
+    statusColor,
     statusFromPsJson,
-    statusIconFilename,
     stoppedStatus,
     tooltipText,
 } from './lib/status.js';
@@ -29,11 +29,10 @@ class Indicator extends PanelMenu.Button {
         this._tooltip = null;
         this._cancellable = new Gio.Cancellable();
         this._http = new Soup.Session({timeout: 2});
-        this._iconFilename = statusIconFilename(this._status);
 
         this._icon = new St.Icon({
-            gicon: Gio.icon_new_for_string(`${extension.path}/icons/${this._iconFilename}`),
-            icon_size: 16,
+            gicon: Gio.icon_new_for_string(`${extension.path}/icons/ollama-symbolic.svg`),
+            style_class: 'system-status-icon',
         });
         this.add_child(this._icon);
 
@@ -50,13 +49,7 @@ class Indicator extends PanelMenu.Button {
         if (this._destroyed)
             return;
         this._status = status;
-        const iconFilename = statusIconFilename(status);
-        if (iconFilename !== this._iconFilename) {
-            this._iconFilename = iconFilename;
-            this._icon.gicon = Gio.icon_new_for_string(
-                `${this._extension.path}/icons/${iconFilename}`
-            );
-        }
+        this._icon.set_style(`color: ${statusColor(status)}`);
         this.accessible_name = tooltipText(status).replaceAll('\n', ', ');
         if (this.hover)
             this._syncTooltip();

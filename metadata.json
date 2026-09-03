@@ -3,6 +3,6 @@
     "name": "Ollama Status",
     "description": "Shows whether Ollama is running, with loaded models and memory use on hover.",
     "shell-version": ["46", "47", "48"],
-    "url": "",
-    "version": 1
+    "url": "https://github.com/LeVibeux/OllamaRunner",
+    "version": 2
 }

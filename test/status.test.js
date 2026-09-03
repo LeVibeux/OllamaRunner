@@ -5,8 +5,8 @@ import test from 'node:test';
 import {
     formatBytes,
     panelStyleClass,
+    statusColor,
     statusFromPsJson,
-    statusIconFilename,
     stoppedStatus,
     tooltipText,
 } from '../lib/status.js';
@@ -92,29 +92,18 @@ test('panelStyleClass is red without a loaded model and green with one', () => {
     );
 });
 
-test('statusIconFilename selects an explicit red or green icon', () => {
-    assert.equal(statusIconFilename(stoppedStatus()), 'ollama-stopped.svg');
-    assert.equal(statusIconFilename({running: true, models: []}), 'ollama-stopped.svg');
-    assert.equal(
-        statusIconFilename({running: true, models: [{name: 'llama3:8b'}]}),
-        'ollama-running.svg'
-    );
+test('statusColor is red without a loaded model and green with one', () => {
+    assert.equal(statusColor(stoppedStatus()), '#e01b24');
+    assert.equal(statusColor({running: true, models: []}), '#e01b24');
+    assert.equal(statusColor({running: true, models: [{name: 'llama3:8b'}]}), '#33d17a');
 });
 
-test('colored status icons contain explicit red and green fills', () => {
-    const stoppedIcon = readFileSync(
-        new URL('../icons/ollama-stopped.svg', import.meta.url),
-        'utf8'
-    );
-    const runningIcon = readFileSync(
-        new URL('../icons/ollama-running.svg', import.meta.url),
-        'utf8'
-    );
-    assert.match(stoppedIcon, /fill=["']#e01b24["']/i);
-    assert.match(runningIcon, /fill=["']#33d17a["']/i);
+test('symbolic icon uses the GNOME recolorable foreground fill', () => {
+    const icon = readFileSync(new URL('../icons/ollama-symbolic.svg', import.meta.url), 'utf8');
+    assert.match(icon, /fill=["']#bebebe["']/i);
 });
 
-test('indicator does not force GNOME symbolic monochrome styling', () => {
+test('indicator applies the status color as an inline style', () => {
     const extension = readFileSync(new URL('../extension.js', import.meta.url), 'utf8');
-    assert.doesNotMatch(extension, /style_class:\s*['"]system-status-icon['"]/);
+    assert.match(extension, /set_style\(`color:\s*\$\{statusColor\(status\)\}`\)/);
 });
