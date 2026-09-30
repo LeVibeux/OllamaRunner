@@ -9,7 +9,7 @@ OllamaRunner is a small GNOME Shell status indicator for local Ollama models.
 
 ## Requirements
 
-- GNOME Shell 46, 47, or 48
+- GNOME Shell 46–50 (including Ubuntu 26.04 with GNOME Shell 50)
 - Ollama using its standard local API at `127.0.0.1:11434`
 - `gnome-extensions` for installation
 
@@ -34,6 +34,8 @@ gnome-extensions info ollama-status@arnaudmetois
 
 GNOME Shell on Wayland may keep the previous JavaScript module after disabling and enabling an extension. Log out and back in after installing an update if the displayed behavior does not change.
 
+If an older installation shows `OUT OF DATE` after an Ubuntu upgrade, install the updated archive and log out and back in. Do not disable GNOME's extension version validation.
+
 ## Build
 
 Run the tests:
@@ -51,6 +53,16 @@ zip ollama-status@arnaudmetois.shell-extension.zip \
   icons/ollama-symbolic.svg lib/status.js
 unzip -t ollama-status@arnaudmetois.shell-extension.zip
 ```
+
+On GNOME Shell 50, run the runtime smoke test in a separate headless session:
+
+```sh
+dbus-run-session -- gnome-shell-test-tool --headless --disable-animations \
+  --extension "$PWD/ollama-status@arnaudmetois.shell-extension.zip" \
+  "$PWD/test/shell-smoke.js"
+```
+
+The test uses isolated extension settings and verifies activation with version validation enabled, the polling timer, red/green colors, tooltip contents, and cleanup when disabled. It does not restart your desktop session. GNOME Shell 50.1 on Ubuntu 26.04.1 was runtime-tested; earlier declared versions were not re-tested in this environment.
 
 ## How it works
 

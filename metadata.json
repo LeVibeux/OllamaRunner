@@ -2,7 +2,7 @@
     "uuid": "ollama-status@arnaudmetois",
     "name": "Ollama Status",
     "description": "Shows whether Ollama is running, with loaded models and memory use on hover.",
-    "shell-version": ["46", "47", "48"],
+    "shell-version": ["46", "47", "48", "49", "50"],
     "url": "https://github.com/LeVibeux/OllamaRunner",
-    "version": 2
+    "version": 3
 }

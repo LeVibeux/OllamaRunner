@@ -107,3 +107,10 @@ test('indicator applies the status color as an inline style', () => {
     const extension = readFileSync(new URL('../extension.js', import.meta.url), 'utf8');
     assert.match(extension, /set_style\(`color:\s*\$\{statusColor\(status\)\}`\)/);
 });
+
+test('metadata supports GNOME Shell 50 on Ubuntu 26.04 without dropping older releases', () => {
+    const metadata = JSON.parse(readFileSync(new URL('../metadata.json', import.meta.url), 'utf8'));
+    assert.equal(metadata.uuid, 'ollama-status@arnaudmetois');
+    for (const version of ['46', '47', '48', '49', '50'])
+        assert.ok(metadata['shell-version'].includes(version), `Missing GNOME Shell ${version} support`);
+});
